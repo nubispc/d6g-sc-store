@@ -1,0 +1,46 @@
+{
+  "id": "mMTC-001",
+  "serviceType": "Massive Machine Type Communications",
+  "name": "mMTC service",
+  "state": "active",
+  "category": "Customer facing service",
+  "validFor": {
+    "startDateTime": "2025-01-01T00:00:00Z",
+    "endDateTime": "2025-12-31T23:59:59Z"
+  },
+  "relatedEntity": [],
+  "relatedParty": {
+    "type": "string",
+    "description": "for all IoT devices"
+  },
+  "place": {
+    "type": "string",
+    "description": "whole country"
+  },
+  "serviceLevelSpecParameters": [
+    {
+      "name": "Latency",
+      "serviceParmCategory": "service specific",
+      "serviceParmPerspective": "single device session",
+      "transformationAlgorithmOfKQI": "Measure average end-to-end delay over a 5 minute interval",
+      "parameterType": "KPI",
+      "targetValue": "100 ms"
+    },
+    {
+      "name": "Throughput",
+      "serviceParmCategory": "service specific",
+      "serviceParmPerspective": "single device session",
+      "transformationAlgorithmOfKQI": "Measure average uplink/downlink throughput per device",
+      "parameterType": "KPI",
+      "targetValue": "1 Mbps"
+    },
+    {
+      "name": "Availability",
+      "serviceParmCategory": "service specific",
+      "serviceParmPerspective": "aggregated",
+      "transformationAlgorithmOfKQI": "Measure network accessibility success ratio for devices",
+      "parameterType": "KPI",
+      "targetValue": "99.9%"
+    }
+  ]
+}
