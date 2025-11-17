@@ -1,0 +1,110 @@
+local-nsd:
+
+  ## local-nsd refers to a network service graph whose subgraph is described
+
+  info:
+
+    ns-instance-id: "56"                # same as the 16-bit identifier used in D6G Header
+    description: "Real-time Digital Twin slice for Unitree Go1 edge robotic control and monitoring"
+
+    ns:
+      name: "DT_Robot_Slice_Service"    # Service name
+      id: "0002"                        # Service catalog reference
+      vendor: "D6G"
+      descriptor-version: "1.0"
+
+    site-id: "d6g-001"
+
+  ######################################################################
+  # Network Functions
+  ######################################################################
+
+  network-functions:
+
+    - nf-instance-id: "firewall-i01"
+      nf-instance-d6g-id: "102"
+      nf-id: "firewall"
+      nf-name: "ACL Firewall"
+      nf-version: "v1.0"
+      nf-mgmt-network: "shared-mgmt-net"   # provides access to higher-level controllers
+
+    - nf-instance-id: "nat-i01"
+      nf-instance-d6g-id: "103"
+      nf-id: "nat"
+      nf-name: "ACL NAT"
+      nf-version: "v1.0"
+      nf-mgmt-network: "shared-mgmt-net"
+
+    - nf-instance-id: "d6g_inout_1-i01"
+      nf-instance-d6g-id: "104"
+      nf-id: "d6g_inout_1"
+      nf-name: "ACL D6G_InOut_1"
+      nf-version: "v1.0"
+      nf-mgmt-network: "shared-mgmt-net"
+
+    - nf-instance-id: "d6g_inout_2-i01"
+      nf-instance-d6g-id: "105"
+      nf-id: "d6g_inout_2"
+      nf-name: "ACL D6G_InOut_2"
+      nf-version: "v1.0"
+      nf-mgmt-network: "shared-mgmt-net"
+
+  ######################################################################
+  # Forwarding Graphs (Data Plane Segments)
+  ######################################################################
+
+  forwarding_graphs:
+
+    - member-graph-index: 1
+      graph-name: "uplink"
+
+      links:
+        - link-id: "toFW"
+          connection-points:
+            - from: "D6G_InOut_1"
+              to: "Firewall_1"
+              description: "Connection from Router D6G_InOut_1 to Firewall_1"
+
+        - link-id: "toNAT"
+          connection-points:
+            - from: "Firewall_1"
+              to: "NAT_1"
+              description: "Connection from Firewall_1 to NAT_1"
+
+        - link-id: "toExit"
+          connection-points:
+            - from: "NAT_1"
+              to: "D6G_InOut_2"
+              description: "Connection from NAT_1 to Router D6G_InOut_2"
+
+      site-latency: "1 ms"
+      site-throughput: "20 mbps"
+      site-availability: "99.999"
+      site-packet-loss: "0.000001"
+
+    - member-graph-index: 2
+      graph-name: "downlink"
+
+      links:
+        - link-id: "toNAT"
+          connection-points:
+            - from: "D6G_InOut_2"
+              to: "NAT_1"
+              description: "Connection from Router D6G_InOut_2 to NAT_1"
+
+        - link-id: "toFW"
+          connection-points:
+            - from: "NAT_1"
+              to: "Firewall_1"
+              description: "Connection from NAT_1 to Firewall_1"
+
+        - link-id: "toExit"
+          connection-points:
+            - from: "Firewall_1"
+              to: "D6G_InOut_1"
+              description: "Connection from Firewall_1 to Router D6G_InOut_1"
+
+      site-latency: "1 ms"
+      site-throughput: "20 mbps"
+      site-availability: "99.999"
+      site-packet-loss: "0.000001"
